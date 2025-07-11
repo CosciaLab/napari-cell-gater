@@ -18,10 +18,8 @@ dependencies = [
     "loguru",
     "napari",
     "dask-image",
-    "qtpy",
     "matplotlib",
     "pandas",
-    "napari",
 ]
 
 [project.optional-dependencies]
