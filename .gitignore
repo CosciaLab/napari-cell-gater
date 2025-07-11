@@ -86,3 +86,7 @@ venv/
 # written by setuptools_scm
 **/_version.py
 /src/cell_gater/example_data/
+
+# pixi environments
+.pixi
+*.egg-info

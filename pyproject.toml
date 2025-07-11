@@ -1,71 +1,19 @@
+[project]
+authors = [{name = "Jose Nimo", email = "nimojose@gmail.com"}]
+dependencies = []
+name = "napari-cell-gater"
+requires-python = ">= 3.11"
+version = "0.1.0"
+
 [build-system]
-requires = ["setuptools>=42.0.0", "wheel", "setuptools_scm"]
-build-backend = "setuptools.build_meta"
+build-backend = "hatchling.build"
+requires = ["hatchling"]
 
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["osx-arm64"]
 
-[tool.setuptools_scm]
-write_to = "src/cell_gater/_version.py"
+[tool.pixi.pypi-dependencies]
+napari_cell_gater = { path = ".", editable = true }
 
-[tool.black]
-line-length = 120
-target-version = ['py38', 'py39', 'py310']
-
-
-[tool.ruff]
-line-length = 120
-lint.select = [
-    "D", # flake8-docstrings
-    "I", # isort
-    "E", # pycodestyle
-    "F", # pyflakes
-    "W", # pycodestyle
-    "Q", # flake8-quotes
-    "SIM", # flake8-simplify
-    "TID",  # flake-8-tidy-imports
-    "NPY",  # NumPy-specific rules
-    "PT",  # flake8-pytest-style
-    "B", # flake8-bugbear
-    "UP", # pyupgrade
-    "C4", # flake8-comprehensions
-    "BLE", # flake8-blind-except
-    "T20",  # flake8-print
-    "RET", # flake8-raise
-]
-lint.ignore = [
-    "E501", # line too long. let black handle this
-    "D100", # Missing docstring in public module
-    "UP006", "UP007", # type annotation. As using magicgui require runtime type annotation then we disable this.
-    "SIM117", # flake8-simplify - some of merged with statements are not looking great with black, reanble after drop python 3.9
-    "D104", # Missing docstring in public package
-]
-lint.unfixable = ["B", "UP", "C4", "BLE", "T20", "RET"]
-
-exclude = [
-    ".bzr",
-    ".direnv",
-    ".eggs",
-    ".git",
-    ".mypy_cache",
-    ".pants.d",
-    ".ruff_cache",
-    ".svn",
-    ".tox",
-    ".venv",
-    "__pypackages__",
-    "_build",
-    "buck-out",
-    "build",
-    "dist",
-    "node_modules",
-    "venv",
-    "*vendored*",
-    "*_vendor*",
-]
-
-target-version = "py38"
-
-[tool.ruff.lint.per-file-ignores]
-    "*/__init__.py" = ["F401"]
-
-[tool.ruff.lint.pydocstyle]
-convention = "numpy"
+[tool.pixi.tasks]
