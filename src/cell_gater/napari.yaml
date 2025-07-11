@@ -11,4 +11,4 @@ contributions:
       title: Load data for cell gating
   widgets:
     - command: napari-cell-gater.SampleWidget
-      display_name: load_sample_data
+      display_name: Load data for cell gating

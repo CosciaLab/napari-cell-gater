@@ -46,9 +46,9 @@ dev = {features = ["dev"],solve-group = "dev"}
 "Homepage" = "https://github.com/CosciaLab/napari-cell-gater"
 "Source" = "https://github.com/CosciaLab/napari-cell-gater"
 
-[build-system]
-build-backend = "hatchling.build"
-requires = ["hatchling"]
+# [build-system]
+# build-backend = "hatchling.build"
+# requires = ["hatchling"]
 
 [tool.pixi.workspace]
 channels = ["conda-forge"]
@@ -61,6 +61,28 @@ napari_cell_gater = { path = ".", editable = true }
 start = "python -m cell_gater"
 test = "pytest -v --color=yes --cov=cell_gater --cov-report=xml"
 docs = "sphinx-build -b html docs/source docs/build"
+
+[project.entry-points."napari.manifest"]
+"napari-cell-gater" = "cell_gater:napari.yaml"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["*.yaml"]
+
+# [project.entry-points."napari.manifest"]
+# napari-hello = "napari_hello:napari.yaml"
+
+
+########### RUFF #############
 
 [tool.ruff]
 line-length = 120
