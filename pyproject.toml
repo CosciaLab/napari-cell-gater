@@ -32,6 +32,9 @@ dev = [
     "tox",
     "hatchling",
     "PyQt5",
+    "sphinx",
+    "myst-parser",
+    "sphinx-rtd-theme",
     ]
 
 [tool.pixi.environments]
@@ -55,7 +58,9 @@ platforms = ["linux-64", "osx-arm64", "osx-64", "win-64"]
 napari_cell_gater = { path = ".", editable = true }
 
 [tool.pixi.tasks]
-
+start = "python -m cell_gater"
+test = "pytest -v --color=yes --cov=cell_gater --cov-report=xml"
+docs = "sphinx-build -b html docs/source docs/build"
 
 [tool.ruff]
 line-length = 120

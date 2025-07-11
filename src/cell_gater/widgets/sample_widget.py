@@ -84,7 +84,7 @@ class SampleWidget(QWidget):
         lower_col = QLabel("Select lowerbound marker column:")
         self.lower_bound_marker_col = QComboBox()
         if len(self.model.regionprops_df) > 0:
-            self.lower_bound_marker_col.addItems([None] + self.model.regionprops_df.columns)
+            self.lower_bound_marker_col.addItems([None] + self.model.regionprops_df.columns.tolist())
         self.lower_bound_marker_col.currentTextChanged.connect(self._update_model_lowerbound)
         self.layout().addWidget(lower_col, 1, 0, 1, 2)
         self.layout().addWidget(self.lower_bound_marker_col, 1, 2, 1, 2)
@@ -93,7 +93,7 @@ class SampleWidget(QWidget):
         upper_col = QLabel("Select upperbound marker column:")
         self.upper_bound_marker_col = QComboBox()
         if len(self.model.regionprops_df) > 0:
-            self.upper_bound_marker_col.addItems([None] + self.model.regionprops_df.columns)
+            self.upper_bound_marker_col.addItems([None] + self.model.regionprops_df.columns.tolist())
         self.upper_bound_marker_col.currentTextChanged.connect(self._update_model_upperbound)
         self.layout().addWidget(upper_col, 2, 0, 1, 2)
         self.layout().addWidget(self.upper_bound_marker_col, 2, 2, 1, 2)

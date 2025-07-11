@@ -134,13 +134,14 @@ def test_integration_with_test_data(data_model):
     data_model.samples = samples
     data_model.image_paths = img_paths
     data_model.mask_paths = mask_paths
-    data_model.sample_image_mapping = dict(zip(samples, img_paths))
-    data_model.sample_mask_mapping = dict(zip(samples, mask_paths))
+    data_model.sample_image_mapping = dict(zip(samples, img_paths, strict=False))
+    data_model.sample_mask_mapping = dict(zip(samples, mask_paths, strict=False))
     assert len(data_model.samples) == 5
     assert len(data_model.image_paths) == 5
     assert len(data_model.mask_paths) == 5
     assert set(data_model.sample_image_mapping.keys()) == set(samples)
     assert set(data_model.sample_mask_mapping.keys()) == set(samples)
+
     # Load and set regionprops_df from all quant CSVs
     dfs = [pd.read_csv(p) for p in sorted(QUANTS_DIR.glob("*.csv"))]
     regionprops_df = pd.concat(dfs, ignore_index=True)
