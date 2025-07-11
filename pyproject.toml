@@ -1,9 +1,48 @@
 [project]
-authors = [{name = "Jose Nimo", email = "nimojose@gmail.com"}]
-dependencies = []
+authors = [
+    {name = "Jose Nimo", email = "nimojose@gmail.com"},
+    {name = "Wouter-Michiel Vierdag", email = "w-mv@hotmail.com"}]
+maintainers = [
+    {name = "Jose Nimo", email = "nimojose@gmail.com"},
+    {name = "Wouter-Michiel Vierdag", email = "w-mv@hotmail.com"}]
 name = "napari-cell-gater"
-requires-python = ">= 3.11"
-version = "0.1.0"
+readme = "README.md"
+requires-python = ">= 3.10"
+version = "0.4.0"
+
+dependencies = [
+    "numpy",
+    "magicgui",
+    "qtpy",
+    "scikit-image",
+    "loguru",
+    "napari",
+    "dask-image",
+    "qtpy",
+    "matplotlib",
+    "pandas",
+    "napari",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "pytest-qt",
+    "pre-commit",
+    "ruff",
+    "tox",
+    "hatchling"
+    ]
+
+[tool.pixi.environments]
+default = {features = [],solve-group = "default"}
+dev = {features = ["dev"],solve-group = "dev"}
+
+
+[project.urls]
+"Homepage" = "https://github.com/CosciaLab/napari-cell-gater"
+"Source" = "https://github.com/CosciaLab/napari-cell-gater"
 
 [build-system]
 build-backend = "hatchling.build"
@@ -11,7 +50,7 @@ requires = ["hatchling"]
 
 [tool.pixi.workspace]
 channels = ["conda-forge"]
-platforms = ["osx-arm64"]
+platforms = ["linux-64", "osx-arm64", "osx-64", "win-64"]
 
 [tool.pixi.pypi-dependencies]
 napari_cell_gater = { path = ".", editable = true }
