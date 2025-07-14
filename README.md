@@ -79,3 +79,8 @@ If you encounter any problems, please [file an issue] along with a detailed desc
 [tox]: https://tox.readthedocs.io/en/latest/
 [pip]: https://pypi.org/project/pip/
 [PyPI]: https://pypi.org/
+
+
+## Assumptions of usage
+
+(1) Images should have the same number of channels as columns in the 
