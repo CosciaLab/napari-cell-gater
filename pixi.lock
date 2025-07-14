@@ -3289,7 +3289,7 @@ packages:
 - pypi: ./
   name: napari-cell-gater
   version: 0.4.0
-  sha256: 2bf50e020fe672b725e1ce82057f9e67a9505fbd4ae2fd45b6e809f540035cf1
+  sha256: 45ea49e97609ebf0c11af2bdc53910951ddf1f7d58ab6903b39300ab4ea59773
   requires_dist:
   - numpy
   - magicgui
