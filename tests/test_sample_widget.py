@@ -100,13 +100,15 @@ def test_validate_success(mock_viewer, data_model):
     test_segs_path = Path(__file__).parent / "test_data" / "segs"
 
     data_model.regionprops_df = stack_csv_files(test_quants_path)
-    data_model.image_paths = list(test_imgs_path.iterdir())
-    data_model.mask_paths = list(test_segs_path.iterdir())
+    data_model.image_paths = [p for p in test_imgs_path.iterdir() if not p.name.startswith('.')]
+    data_model.mask_paths = [p for p in test_segs_path.iterdir() if not p.name.startswith('.')]
     data_model.lower_bound_marker = data_model.regionprops_df.columns[1]
     data_model.upper_bound_marker = data_model.regionprops_df.columns[-1]
     data_model.marker_filter = ""
 
-    with patch("cell_gater.widgets.sample_widget.napari_notification") as mock_notify,          patch("cell_gater.widgets.sample_widget.skimage.io.imread", return_value=numpy.array([[0]])) as mock_imread,          patch("cell_gater.widgets.sample_widget.ScatterInputWidget") as mock_scatter:
+    with patch("cell_gater.widgets.sample_widget.napari_notification") as mock_notify, patch(
+        "cell_gater.widgets.sample_widget.dask_image.imread.imread", return_value=numpy.array([[0]])
+    ) as mock_imread, patch("cell_gater.widgets.sample_widget.ScatterInputWidget") as mock_scatter:
         widget._validate()
         mock_notify.assert_called()
         assert widget.model.validated is True
@@ -205,14 +207,15 @@ def test_validate_button_click(mock_viewer, data_model, qtbot):
     test_segs_path = Path(__file__).parent / "test_data" / "segs"
 
     data_model.regionprops_df = stack_csv_files(test_quants_path)
-    data_model.image_paths = list(test_imgs_path.iterdir())
-    data_model.mask_paths = list(test_segs_path.iterdir())
+    data_model.image_paths = [p for p in test_imgs_path.iterdir() if not p.name.startswith('.')]
+    data_model.mask_paths = [p for p in test_segs_path.iterdir() if not p.name.startswith('.')]
     data_model.lower_bound_marker = data_model.regionprops_df.columns[1]
     data_model.upper_bound_marker = data_model.regionprops_df.columns[-1]
     data_model.marker_filter = ""
 
-    with patch("cell_gater.widgets.sample_widget.napari_notification") as mock_notify,          patch("cell_gater.widgets.sample_widget.skimage.io.imread", return_value=numpy.array([[0]])) as mock_imread,          patch("cell_gater.widgets.sample_widget.ScatterInputWidget") as mock_scatter_widget_init:
-        
+    with patch("cell_gater.widgets.sample_widget.napari_notification") as mock_notify, patch(
+        "cell_gater.widgets.sample_widget.dask_image.imread.imread", return_value=numpy.array([[0]])
+    ) as mock_imread, patch("cell_gater.widgets.sample_widget.ScatterInputWidget") as mock_scatter_widget_init:
         # Simulate clicking the validate button
         qtbot.mouseClick(widget.validate_button, QtCore.Qt.LeftButton)
 

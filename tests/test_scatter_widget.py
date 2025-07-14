@@ -34,11 +34,14 @@ def populated_data_model():
     test_segs_path = Path(__file__).parent / "test_data" / "segs"
 
     model.regionprops_df = stack_csv_files(test_quants_path)
-    model.image_paths = list(test_imgs_path.iterdir())
-    model.mask_paths = list(test_segs_path.iterdir())
-    model.samples = sorted([p.stem for p in model.image_paths]) # Ensure samples are sorted for consistent dropdowns
-    model.sample_image_mapping = {p.stem: p for p in model.image_paths}
-    model.sample_mask_mapping = {p.stem: p for p in model.mask_paths}
+    model.image_paths = [p for p in test_imgs_path.iterdir() if not p.name.startswith('.')]
+    model.mask_paths = [p for p in test_segs_path.iterdir() if not p.name.startswith('.')]
+    image_stems = {i.stem.replace('.ome', '') for i in model.image_paths}
+    mask_stems = {i.stem.replace('.ome', '') for i in model.mask_paths}
+    assert image_stems == mask_stems
+    model.samples = sorted(list(image_stems))
+    model.sample_image_mapping = {p.stem.replace('.ome', ''): p for p in model.image_paths}
+    model.sample_mask_mapping = {p.stem.replace('.ome', ''): p for p in model.mask_paths}
     model.lower_bound_marker = model.regionprops_df.columns[1]
     model.upper_bound_marker = model.regionprops_df.columns[-1]
     model.markers = [col for col in model.regionprops_df.columns if col.startswith("mean_")] # Example markers
