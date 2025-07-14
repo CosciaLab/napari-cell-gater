@@ -1,5 +1,5 @@
 name: napari-cell-gater
-display_name: Multiplexed imaging cell gating
+display_name: napari-cell-gater
 # use 'hidden' to remove plugin from napari hub search results
 visibility: public
 # see https://napari.org/stable/plugins/manifest.html for valid categories
@@ -8,7 +8,7 @@ contributions:
   commands:
     - id: napari-cell-gater.SampleWidget
       python_name: cell_gater.widgets.sample_widget:SampleWidget
-      title: Load data for cell gating
+      title: napari-cell-gater
   widgets:
     - command: napari-cell-gater.SampleWidget
-      display_name: load_sample_data
+      display_name: napari-cell-gater

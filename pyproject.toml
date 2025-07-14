@@ -1,71 +1,148 @@
+[project]
+authors = [
+    {name = "Jose Nimo", email = "nimojose@gmail.com"},
+    {name = "Wouter-Michiel Vierdag", email = "w-mv@hotmail.com"}]
+maintainers = [
+    {name = "Jose Nimo", email = "nimojose@gmail.com"},
+    {name = "Wouter-Michiel Vierdag", email = "w-mv@hotmail.com"}]
+name = "napari-cell-gater"
+readme = "README.md"
+requires-python = ">= 3.10"
+version = "0.4.0"
+
+dependencies = [
+    "numpy",
+    "magicgui",
+    "qtpy",
+    "scikit-image",
+    "loguru",
+    "napari",
+    "dask-image",
+    "matplotlib",
+    "pandas",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "pytest-qt",
+    "pre-commit",
+    "ruff",
+    "tox",
+    "hatchling",
+    "PyQt5",
+    "sphinx",
+    "myst-parser",
+    "sphinx-rtd-theme",
+    ]
+
+[tool.pixi.environments]
+default = {features = [],solve-group = "default"}
+dev = {features = ["dev"],solve-group = "dev"}
+
+
+[project.urls]
+"Homepage" = "https://github.com/CosciaLab/napari-cell-gater"
+"Source" = "https://github.com/CosciaLab/napari-cell-gater"
+
+# [build-system]
+# build-backend = "hatchling.build"
+# requires = ["hatchling"]
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-arm64", "osx-64", "win-64"]
+
+[tool.pixi.pypi-dependencies]
+napari_cell_gater = { path = ".", editable = true }
+
+[tool.pixi.tasks]
+start = "python -m cell_gater"
+test = "pytest -v --color=yes --cov=cell_gater --cov-report=xml"
+docs = "sphinx-build -b html docs/source docs/build"
+
+[project.entry-points."napari.manifest"]
+"napari-cell-gater" = "cell_gater:napari.yaml"
+
 [build-system]
-requires = ["setuptools>=42.0.0", "wheel", "setuptools_scm"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+include-package-data = true
 
-[tool.setuptools_scm]
-write_to = "src/cell_gater/_version.py"
+[tool.setuptools.packages.find]
+where = ["src"]
 
-[tool.black]
-line-length = 120
-target-version = ['py38', 'py39', 'py310']
+[tool.setuptools.package-data]
+"*" = ["*.yaml"]
 
+# [project.entry-points."napari.manifest"]
+# napari-hello = "napari_hello:napari.yaml"
+
+
+########### RUFF #############
 
 [tool.ruff]
 line-length = 120
-lint.select = [
-    "D", # flake8-docstrings
-    "I", # isort
-    "E", # pycodestyle
-    "F", # pyflakes
-    "W", # pycodestyle
-    "Q", # flake8-quotes
-    "SIM", # flake8-simplify
-    "TID",  # flake-8-tidy-imports
-    "NPY",  # NumPy-specific rules
-    "PT",  # flake8-pytest-style
-    "B", # flake8-bugbear
-    "UP", # pyupgrade
-    "C4", # flake8-comprehensions
-    "BLE", # flake8-blind-except
-    "T20",  # flake8-print
-    "RET", # flake8-raise
-]
-lint.ignore = [
-    "E501", # line too long. let black handle this
-    "D100", # Missing docstring in public module
-    "UP006", "UP007", # type annotation. As using magicgui require runtime type annotation then we disable this.
-    "SIM117", # flake8-simplify - some of merged with statements are not looking great with black, reanble after drop python 3.9
-    "D104", # Missing docstring in public package
-]
-lint.unfixable = ["B", "UP", "C4", "BLE", "T20", "RET"]
+target-version = "py311"
+
+[tool.ruff.lint]
+per-file-ignores."*/__init__.py" = [ "F401" ]
+per-file-ignores."docs/*" = [ "I" ]
+per-file-ignores."tests/*" = [ "D" ]
 
 exclude = [
-    ".bzr",
-    ".direnv",
-    ".eggs",
     ".git",
-    ".mypy_cache",
-    ".pants.d",
+    ".napari-hub",
+    "__pycache__",
+    "pytest_cache",
     ".ruff_cache",
-    ".svn",
-    ".tox",
-    ".venv",
-    "__pypackages__",
-    "_build",
-    "buck-out",
     "build",
     "dist",
-    "node_modules",
-    "venv",
-    "*vendored*",
-    "*_vendor*",
+    ".venv",
+    "env",
+    "docs",
+    "notebooks",
+    "tests/data",
 ]
 
-target-version = "py38"
+select = [
+  "B",      # flake8-bugbear
+  "BLE",    # flake8-blind-except
+  "C4",     # flake8-comprehensions
+  "D",      # pydocstyle
+  "E",      # Error detected by Pycodestyle
+  "F",      # Errors detected by Pyflakes
+  "I",      # isort
+  "RUF100", # Report unused noqa directives
+  "TID",    # flake8-tidy-imports
+  "UP",     # pyupgrade
+  "W",      # Warning detected by Pycodestyle
+]
 
-[tool.ruff.lint.per-file-ignores]
-    "*/__init__.py" = ["F401"]
+ignore = [
+  "B008", # Errors from function calls in argument defaults. These are fine when the result is immutable.
+  "D100", # Missing docstring in public module
+  "D104", # Missing docstring in public package
+  "D105", # __magic__ methods are often self-explanatory, allow missing docstrings
+  "D107", # Missing docstring in __init__
+  "D203", # We don’t want a blank line before a class docstring
+  "D213", # <> We want docstrings to start immediately after the opening triple quote
+  "D400", # first line should end with a period [Bug: doesn’t work with single-line docstrings]
+  "D401", # First line should be in imperative mood; try rephrasing
+  "E501", # line too long -> we accept long comment lines; formatter gets rid of long code lines
+  "E731", # Do not assign a lambda expression, use a def -> lambda expression assignments are convenient
+  "E741", # allow I, O, l as variable names -> I is the identity matrix
+]
 
 [tool.ruff.lint.pydocstyle]
-convention = "numpy"
+convention = "google"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true

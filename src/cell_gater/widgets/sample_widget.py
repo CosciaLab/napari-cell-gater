@@ -1,7 +1,12 @@
 from __future__ import annotations
 
+import sys, datetime
 from pathlib import Path
 
+import pandas as pd
+# import skimage.io
+import dask_image.imread
+from loguru import logger
 from napari import Viewer
 from napari.utils.history import (
     get_open_history,
@@ -23,11 +28,6 @@ from cell_gater.utils.csv_df import stack_csv_files
 from cell_gater.utils.misc import napari_notification
 from cell_gater.widgets.scatter_widget import ScatterInputWidget
 
-import skimage.io
-import numpy
-import pandas as pd
-import sys
-from loguru import logger
 logger.remove()
 logger.add(sys.stdout, format="<green>{time:HH:mm:ss.SS}</green> | <level>{level}</level> | {message}")
 
@@ -35,14 +35,13 @@ class SampleWidget(QWidget):
     """Sample widget for loading required data."""
 
     def __init__(self, napari_viewer: Viewer, model: DataModel | None = None) -> None:
-        """
-        Create the QWidget visuals.
+        """Create the QWidget visuals.
 
         This widget sets up the QtWidget elements used to determine what the input is that the user wants to use
         for cell gating. It also connects these elements to their appropriate callback functions.
 
-        Parameters
-        ----------
+        Parameters:
+        ------------
         viewer : napari.Viewer
             The napari Viewer instance.
         model : DataModel | None
@@ -84,7 +83,7 @@ class SampleWidget(QWidget):
         lower_col = QLabel("Select lowerbound marker column:")
         self.lower_bound_marker_col = QComboBox()
         if len(self.model.regionprops_df) > 0:
-            self.lower_bound_marker_col.addItems([None] + self.model.regionprops_df.columns)
+            self.lower_bound_marker_col.addItems([None] + self.model.regionprops_df.columns.tolist())
         self.lower_bound_marker_col.currentTextChanged.connect(self._update_model_lowerbound)
         self.layout().addWidget(lower_col, 1, 0, 1, 2)
         self.layout().addWidget(self.lower_bound_marker_col, 1, 2, 1, 2)
@@ -93,7 +92,7 @@ class SampleWidget(QWidget):
         upper_col = QLabel("Select upperbound marker column:")
         self.upper_bound_marker_col = QComboBox()
         if len(self.model.regionprops_df) > 0:
-            self.upper_bound_marker_col.addItems([None] + self.model.regionprops_df.columns)
+            self.upper_bound_marker_col.addItems([None] + self.model.regionprops_df.columns.tolist())
         self.upper_bound_marker_col.currentTextChanged.connect(self._update_model_upperbound)
         self.layout().addWidget(upper_col, 2, 0, 1, 2)
         self.layout().addWidget(self.upper_bound_marker_col, 2, 2, 1, 2)
@@ -252,8 +251,7 @@ class SampleWidget(QWidget):
         self.model.marker_filter = self.filter_field.text()
 
     def _validate(self):
-        """
-        Perform validation of the input data upon press of the validate button by the user.
+        """Perform validation of the input data upon press of the validate button by the user.
 
         This function checks whether all required input is in the data model and also filters the markers based on
         the current value of the filter marker in the data model.
@@ -282,21 +280,26 @@ class SampleWidget(QWidget):
         upperbound_index = columns.index(self.model.upper_bound_marker)
         self.model.markers = columns[lowerbound_index : upperbound_index + 1]
         n_markers = len(self.model.markers)
+
         # filter DNA and DAPI channels by default
         for filter in self.model.marker_filter.split(","):
             for marker in self.model.markers.copy():
                 if filter.lower() in marker.lower():
                     self.model.markers.remove(marker)
+
         napari_notification(f"Removed {n_markers - len(self.model.markers)} out of list of {n_markers}.")
 
         # Find num of channels in image, maybe more efficient way, WSI would take very long
-        image_shape = skimage.io.imread(self.model.image_paths[0]).shape
+        # image_shape = skimage.io.imread(self.model.image_paths[0]).shape
+        image_shape = dask_image.imread.imread(self.model.image_paths[0]).shape
+        logger.info(f"Number of channels in image: {image_shape}")
         n_channels = image_shape[0]
         logger.info(f"Number of channels in image: {n_channels}")
 
         # Mapping df columns to image channels
         self.model.markers_image_indices = {}
 
+        # if manual channel mapping is provided
         if self.model.manual_channel_mapping:
             logger.info("self.model.manual_channel_mapping is TRUE")
             # load manual csv
@@ -319,5 +322,4 @@ class SampleWidget(QWidget):
         self.viewer.window.add_dock_widget(
             self._scatter_widget, name="cell_gater", area="right", menu=self._viewer.window.window_menu, tabify=True
         )
-
         self.model.validated = True

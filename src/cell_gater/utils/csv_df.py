@@ -56,7 +56,7 @@ def get_gates_from_regionprops_df(path_to_gate: Path, df: pd.DataFrame, markers:
     """
     if path_to_gate is not None:
         assert path_to_gate.exists(), f"CSV path path_to_gate `{path_to_gate}` does not exist."
-        gates = pd.read_csv(path_to_gate)
+        gates = pd.read_csv(path_to_gate, index_col=0)
     else:
         gates = pd.DataFrame(index=markers, columns=df["sample_id"].unique())
     return gates
